@@ -1,0 +1,94 @@
+CREATE TABLE departments (
+    department_id VARCHAR(10) PRIMARY KEY,
+    department_name VARCHAR(255) NOT NULL
+);
+
+
+SELECT * FROM departments;
+
+DROP TABLE departments;
+
+CREATE TABLE dept_emp (
+    emp_no INT,
+    dept_no VARCHAR(10),
+    PRIMARY KEY (emp_no, dept_no)
+);
+
+SELECT * FROM dept_emp;
+
+DROP TABLE dept_emp;
+
+CREATE TABLE dept_manager (
+    dept_no VARCHAR(10),
+    emp_no int,
+    PRIMARY KEY (dept_no, emp_no)
+);
+
+SELECT * FROM dept_manager;
+
+DROP TABLE dept_manager;
+
+CREATE TABLE employees (
+    emp_no int PRIMARY KEY,
+    emp_title_id VARCHAR (10),
+    birth_date DATE,
+	first_name VARCHAR (20),
+	last_name VARCHAR (20),
+	sex VARCHAR (5),
+	hire_date DATE
+);
+
+SELECT * FROM employees;
+
+CREATE TABLE salaries (
+    emp_no int PRIMARY KEY,
+    salary int
+);
+
+SELECT * FROM salaries;
+
+CREATE TABLE titles (
+    title_id VARCHAR (10) PRIMARY KEY,
+    title VARCHAR (30)
+);
+
+SELECT * FROM titles;
+
+SELECT employees.emp_no, employees.last_name, employees.first_name, employees.sex, salaries.salary
+FROM employees
+JOIN salaries ON employees.emp_no = salaries.emp_no;
+
+SELECT first_name, last_name, hire_date
+FROM employees
+WHERE EXTRACT(YEAR FROM hire_date) = 1986;
+
+SELECT dept_manager.dept_no, departments.department_name, dept_manager.emp_no, employees.last_name, employees.first_name
+FROM dept_manager
+JOIN departments ON dept_manager.dept_no = departments.department_id
+JOIN employees ON dept_manager.emp_no = employees.emp_no;
+
+SELECT dept_emp.emp_no, employees.last_name, employees.first_name, departments.department_name
+FROM dept_emp
+JOIN employees ON dept_emp.emp_no = employees.emp_no
+JOIN departments ON dept_emp.dept_no = departments.department_id;
+
+SELECT first_name, last_name, sex
+FROM employees
+WHERE first_name = 'Hercules' AND last_name LIKE 'B%';
+
+SELECT employees.emp_no, employees.last_name, employees.first_name
+FROM employees
+JOIN dept_emp ON employees.emp_no = dept_emp.emp_no
+JOIN departments ON dept_emp.dept_no = departments.department_id
+WHERE departments.department_name = 'Sales';
+
+SELECT employees.emp_no, employees.last_name, employees.first_name, departments.department_name
+FROM employees
+JOIN dept_emp ON employees.emp_no = dept_emp.emp_no
+JOIN departments ON dept_emp.dept_no = departments.department_id
+WHERE departments.department_name IN ('Sales', 'Development');
+
+SELECT last_name, COUNT(*) AS frequency
+FROM employees
+GROUP BY last_name
+ORDER BY frequency DESC;
